@@ -114,6 +114,7 @@ public:
   MatrixTypeIntHost iscau;
   int ictrl;
   int nsteps;
+  int nprocesses;
 
   MatrixTypeRealDual dnca;
   MatrixTypeRealDual dbca;
@@ -213,6 +214,7 @@ public:
 
   int elem_id;
   int imicro;
+  int process;
   int iter;
   real_t evmp;
   real_t dvmp;
@@ -265,6 +267,7 @@ public:
   void solve();
   void solve(real_t* vel_grad, real_t* stress, real_t dt, size_t cycle, size_t elem_gid, real_t udotAccThIn);
   void evolve();
+  void reverse_direction();
   void check_macrostress();
   void print_vel_grad();
   void allocate_memory();

@@ -173,6 +173,7 @@ void EVPFFT::vpsc_input()
 
   CLEAR_LINE(ur0);
   ur0 >> nsteps; CLEAR_LINE(ur0);
+  ur0 >> nprocesses; CLEAR_LINE(ur0);
   ur0 >> error;  CLEAR_LINE(ur0);
   ur0 >> itmax;  CLEAR_LINE(ur0);
   ur0 >> irecover; CLEAR_LINE(ur0);

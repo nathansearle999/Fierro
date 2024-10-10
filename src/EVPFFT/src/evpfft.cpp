@@ -337,6 +337,7 @@ void EVPFFT::evolve()
 #ifndef ABSOLUTE_NO_OUTPUT
         if (0 == my_rank) {
           printf(" --------------------\n");
+          printf(" PROC = %d\n", process);
           printf(" STEP = %d\n", imicro);
           printf(" ITER = %d\n", iter);
           printf(" DIRECT FFT OF STRESS FIELD\n");
@@ -427,10 +428,34 @@ void EVPFFT::evolve()
 }
 
 void EVPFFT::solve() {
-  for (imicro = 1; imicro <= nsteps; imicro++) {
-    evolve();
+  for (process = 1; process <= nprocesses; process++) {
+    int nstepsActual = nsteps;
+    if (process != 1 && process != nprocesses)
+      nstepsActual = nsteps * 2;
+    if (process != 1)
+      reverse_direction();
+    for (imicro = 1; imicro <= nstepsActual; imicro++) {
+      evolve();
+    }
   }
   return;
+}
+
+void EVPFFT::reverse_direction()
+{
+  Profiler profiler(__FUNCTION__);
+
+  FOR_ALL_CLASS(k, 1, npts3+1,
+                j, 1, npts2+1,
+                i, 1, npts1+1, {
+    
+    for (int jj = 1; jj <= 3; jj++) {
+      for (int ii = 1; ii <= 3; ii++) {
+        udot(ii,jj) *= -1;
+      } // end for ii
+    } // end for jj
+ 
+  }); // end FOR_ALL_CLASS
 }
 
 void EVPFFT::check_macrostress()
