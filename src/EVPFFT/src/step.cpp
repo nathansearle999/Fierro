@@ -8,6 +8,15 @@ void EVPFFT::step_update_disgrad()
 {
   Profiler profiler(__FUNCTION__);
 
+  //     INITIAL GUESS OF DISGRADMACRO AT t+dt ALWAYS ELASTIC   
+  for (int jj = 1; jj <= 3; jj++) {
+    for (int ii = 1; ii <= 3; ii++) {
+      disgradmacro.host(ii,jj) = disgradmacrot(ii,jj) + udot.host(ii,jj) * tdot;
+    } // end for ii
+  } // end for jj
+  // update device
+  disgradmacro.update_device();
+
   FOR_ALL_CLASS(k, 1, npts3+1,
                 j, 1, npts2+1,
                 i, 1, npts1+1, {
@@ -77,15 +86,6 @@ void EVPFFT::step_update_velgrad_etc()
 void EVPFFT::step_vm_calc()
 {
   Profiler profiler(__FUNCTION__);
-
-  //     INITIAL GUESS OF DISGRADMACRO AT t+dt ALWAYS ELASTIC   
-  for (int jj = 1; jj <= 3; jj++) {
-    for (int ii = 1; ii <= 3; ii++) {
-      disgradmacro.host(ii,jj) = disgradmacrot(ii,jj) + udot.host(ii,jj) * tdot;
-    } // end for ii
-  } // end for jj
-  // update device
-  disgradmacro.update_device();
 
   // Note: reduction is performed on epav(3,3) and edotpav(3,3) 
   //       epav = all_reduce[0]
