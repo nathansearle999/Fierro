@@ -201,6 +201,23 @@ public:
   //MatrixTypeRealDual trialtau;
   MatrixTypeRealDual xkin;
 
+  int ibackstress;
+  real_t onwh1;
+  real_t onwr1;
+  real_t onwm1;
+  real_t onwh2;
+  real_t onwr2;
+  real_t onwm2;
+  MatrixTypeRealDual rssTemp;
+  MatrixTypeRealDual xkin1;
+  MatrixTypeRealDual xkin2;
+  MatrixTypeRealDual xkindot;
+  MatrixTypeRealDual xkindot1;
+  MatrixTypeRealDual xkindot2;
+  MatrixTypeRealDual xkintemp;
+  MatrixTypeRealDual xkintemp1;
+  MatrixTypeRealDual xkintemp2;
+
   MatrixTypeRealHost ph_array;
   MatrixTypeRealHost th_array;
   MatrixTypeRealHost om_array;
@@ -296,6 +313,7 @@ public:
   void step_texture_rve_update();
   void update_orient();
   void harden(int imicro);
+  void update_backstress();
   void read_classic_los_alamos_texture_file(const std::string & filetext);
   void read_hdf5_texture_file(const std::string & filetext);
   void read_vtk_lattice_structure(const std::string & filetext);

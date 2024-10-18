@@ -144,13 +144,24 @@ void EVPFFT::evpal(int imicro)
                         sch(3,is,i,j,k)*sg6(3) + 
                         sch(4,is,i,j,k)*sg6(4) + 
                         sch(5,is,i,j,k)*sg6(5);
+              
+              rssTemp(is,i,j,k) = rss(is,i,j,k);
 #endif
+              if (ibackstress == 1 && iter1 != 1) {
+                xkintemp(is,i,j,k) = xkin(is,i,j,k) + xkindot(is,i,j,k) * tdot;
+                xkintemp1(is,i,j,k) = xkin1(is,i,j,k) + xkindot1(is,i,j,k) * tdot;
+                xkintemp2(is,i,j,k) = xkin2(is,i,j,k) + xkindot2(is,i,j,k) * tdot;
+              }
+              else {
+                xkintemp(is,i,j,k) = xkin(is,i,j,k);
+              }
+
               isign = 1;
-              if ( (rss(is,i,j,k)-xkin(is,i,j,k)) < 0.0 ) {
+              if ( (rss(is,i,j,k)-xkintemp(is,i,j,k)) < 0.0 ) {
                 isign = 2;
               }
    
-              rss(is,i,j,k) = (rss(is,i,j,k)-xkin(is,i,j,k))/crss(is,isign,i,j,k);
+              rss(is,i,j,k) = (rss(is,i,j,k)-xkintemp(is,i,j,k))/crss(is,isign,i,j,k);
 
 #ifdef TWO_SIGN_SLIP_SYSTEMS
               if ( rss(is,i,j,k) < 0.0 ) {
@@ -163,10 +174,21 @@ void EVPFFT::evpal(int imicro)
               rss2(is,i,j,k) = gamd0(is,jph) * ABS(PowIntExpo(rss(is,i,j,k),nrs(is,jph))) * COPYSIGN(1.0,rss(is,i,j,k));
 #else
               rss1(is,i,j,k) = gamd0(is,jph) * nrs(is,jph) * ABS(PowIntExpo(rss(is,i,j,k),(nrs(is,jph)-1))) / crss(is,isign,i,j,k);
-              rss2(is,i,j,k) = gamd0(is,jph) * ABS(PowIntExpo(rss(is,i,j,k),nrs(is,jph))) * COPYSIGN(1.0,rss(is,i,j,k));
+              if (ibackstress == 1) {
+                rss2(is,i,j,k) = gamd0(is,jph) * ABS(PowIntExpo(rss(is,i,j,k),nrs(is,jph))) * COPYSIGN(1.0,rssTemp(is,i,j,k)-xkintemp(is,i,j,k));
+              }
+              else {
+                rss2(is,i,j,k) = gamd0(is,jph) * ABS(PowIntExpo(rss(is,i,j,k),nrs(is,jph))) * COPYSIGN(1.0,rss(is,i,j,k));
+              }
 #endif
 
               gamdot(is,i,j,k) = rss2(is,i,j,k);
+
+              if (ibackstress == 1) {
+                xkindot1(is,i,j,k) = onwh1 * gamdot(is,i,j,k) - onwr1 * PowIntExpo(ABS(xkintemp1(is,i,j,k)) / (onwh1 / onwr1), onwm1) * xkintemp1(is,i,j,k) * ABS(gamdot(is,i,j,k));
+                xkindot2(is,i,j,k) = onwh2 * gamdot(is,i,j,k) - onwr2 * PowIntExpo(ABS(xkintemp2(is,i,j,k)) / (onwh2 / onwr2), onwm2) * xkintemp2(is,i,j,k) * ABS(gamdot(is,i,j,k));
+                xkindot(is,i,j,k) = xkindot1(is,i,j,k) + xkindot2(is,i,j,k);
+              }
             } // end for is
 
             for (int ii = 1; ii <= 5; ii++) {

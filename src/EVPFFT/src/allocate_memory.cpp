@@ -99,6 +99,16 @@ void EVPFFT::allocate_memory()
   //trialtau = MatrixTypeRealDual (NSYSMX, 2, npts1, npts2, npts3);
   xkin = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
 
+  rssTemp = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkin1 = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkin2 = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkindot = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkindot1 = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkindot2 = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkintemp = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkintemp1 = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+  xkintemp2 = MatrixTypeRealDual (NSYSMX, npts1, npts2, npts3);
+
   ph_array = MatrixTypeRealHost (npts1, npts2, npts3);
   th_array = MatrixTypeRealHost (npts1, npts2, npts3);
   om_array = MatrixTypeRealHost (npts1, npts2, npts3);

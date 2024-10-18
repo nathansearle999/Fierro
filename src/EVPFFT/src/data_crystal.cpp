@@ -69,6 +69,8 @@ void EVPFFT::data_crystal(int iph, const std::string & filecryspl)
         ur1 >> hlatex(nm,jm);
       }
       CLEAR_LINE(ur1);
+      ur1 >> onwh1 >> onwr1 >> onwm1; CLEAR_LINE(ur1);
+      ur1 >> onwh2 >> onwr2 >> onwm2; CLEAR_LINE(ur1);
 
       // scale variables
       gamd0x /= time_scale;

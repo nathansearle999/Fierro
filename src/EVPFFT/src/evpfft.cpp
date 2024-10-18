@@ -412,6 +412,10 @@ void EVPFFT::evolve()
       if (iuphard == 1 && (ithermo != 1 || imicro > 2)) {
         harden(imicro);
       }
+      
+      if (ibackstress == 1) {
+        update_backstress();
+      }
 
 #ifndef ABSOLUTE_NO_OUTPUT
       write_macro_state();
@@ -428,7 +432,7 @@ void EVPFFT::evolve()
 }
 
 void EVPFFT::solve() {
-  for (process = 1; process <= nprocesses; process++) {
+  for (process = 1; process < nprocesses; process++) {
     int nstepsActual = nsteps;
     if (process != 1 && process != nprocesses)
       nstepsActual = nsteps * 2;
@@ -454,6 +458,23 @@ void EVPFFT::reverse_direction()
         udot(ii,jj) *= -1;
       } // end for ii
     } // end for jj
+ 
+  }); // end FOR_ALL_CLASS
+}
+
+void EVPFFT::update_backstress()
+{
+  Profiler profiler(__FUNCTION__);
+
+  FOR_ALL_CLASS(k, 1, npts3+1,
+                j, 1, npts2+1,
+                i, 1, npts1+1, {
+    
+    for (int is = 1; is <= nsyst(jphase(i,j,k)); is++) {
+      xkin(is,i,j,k) += xkindot(is,i,j,k) * tdot;
+      xkin1(is,i,j,k) += xkindot1(is,i,j,k) * tdot;
+      xkin2(is,i,j,k) += xkindot2(is,i,j,k) * tdot;
+    }
  
   }); // end FOR_ALL_CLASS
 }

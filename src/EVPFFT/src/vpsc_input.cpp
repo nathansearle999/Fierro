@@ -187,6 +187,7 @@ void EVPFFT::vpsc_input()
   ur0 >> isave;   CLEAR_LINE(ur0);
   ur0 >> iupdate; CLEAR_LINE(ur0);
   ur0 >> iuphard; CLEAR_LINE(ur0);
+  ur0 >> ibackstress; CLEAR_LINE(ur0);
   ur0 >> iwtex;   CLEAR_LINE(ur0);
   ur0 >> iwfields >> iwstep; CLEAR_LINE(ur0);
 
